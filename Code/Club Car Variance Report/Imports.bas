@@ -6,7 +6,8 @@ Option Explicit
 ' Date : 7/31/2014
 ' Desc : Prompts the user to select a file for import
 '---------------------------------------------------------------------------------------
-Sub UserImportFile(DestRange As Range, Optional SourceSheet As String = "", Optional ShowAllData = False, Optional FileFilter = "", Optional InitialFileName As String = "")
+Sub UserImportFile(DestRange As Range, Optional Title As String = "Open", Optional SourceSheet As String = "", _
+                   Optional ShowAllData = False, Optional InitialFileName As String = "")
     Dim File As Variant             'Full path to user selected file
     Dim PrevDispAlerts As Boolean   'Original state of Application.DisplayAlerts
     Dim i As Integer
@@ -14,8 +15,8 @@ Sub UserImportFile(DestRange As Range, Optional SourceSheet As String = "", Opti
     With Application.FileDialog(msoFileDialogFilePicker)
         .AllowMultiSelect = False
         .InitialFileName = InitialFileName
+        .Title = Title
         .Show
-
         If .SelectedItems.Count = 1 Then
             File = .SelectedItems(1)
         End If
@@ -28,7 +29,10 @@ Sub UserImportFile(DestRange As Range, Optional SourceSheet As String = "", Opti
         Workbooks.Open File
 
         If SourceSheet = "" Then SourceSheet = ActiveSheet.Name
+
+        On Error GoTo SELECT_ERR
         Sheets(SourceSheet).Select
+        On Error GoTo 0
 
         If ShowAllData = True Then
             ActiveSheet.AutoFilterMode = False
@@ -41,7 +45,6 @@ Sub UserImportFile(DestRange As Range, Optional SourceSheet As String = "", Opti
             End If
         End If
 
-        VerifyCols
         Sheets(SourceSheet).UsedRange.Copy Destination:=DestRange
 
         ActiveWorkbook.Saved = True
@@ -50,20 +53,11 @@ Sub UserImportFile(DestRange As Range, Optional SourceSheet As String = "", Opti
         Err.Raise 18, "UserImportFile", "User canceled import"
     End If
     Application.DisplayAlerts = PrevDispAlerts
-End Sub
+    Exit Sub
 
-Private Sub VerifyCols()
-    Dim ColHeaders As Variant
-    Dim i As Integer
-
-    ColHeaders = Array("Sims", "Items", "Description", _
-                       "On Hand", "Reserve", "OO", "BO", _
-                       "WDC", "Last Cost", "UOM", "Supplier", _
-                       "A/P", "Vis")
-
-    For i = 0 To UBound(ColHeaders)
-        If Cells(1, i + 1).Value <> ColHeaders(i) Then
-            Err.Raise CustErr.COLNOTFOUND, "VerifyCols", "Column " & ColHeaders(i) & " not found"
-        End If
-    Next
+SELECT_ERR:
+    ActiveWorkbook.Saved = True
+    ActiveWorkbook.Close
+    Application.DisplayAlerts = PrevDispAlerts
+    Err.Raise 50001, "UserImportFile", "Sheet """ & SourceSheet & """ does not exist"
 End Sub
