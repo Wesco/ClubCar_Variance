@@ -38,35 +38,3 @@ Sub UserImportFile(DestRange As Range, Optional DelFile As Boolean = False, Opti
     End If
     Application.DisplayAlerts = OldDispAlert
 End Sub
-
-'---------------------------------------------------------------------------------------
-' Proc  : Function Exists
-' Date  : 6/24/14
-' Type  : Boolean
-' Desc  : Checks if a file exists and can be read
-' Ex    : FileExists "C:\autoexec.bat"
-'---------------------------------------------------------------------------------------
-Private Function Exists(ByVal FilePath As String) As Boolean
-    Dim fso As Object
-    Set fso = CreateObject("Scripting.FileSystemObject")
-
-    'Remove trailing backslash
-    If InStr(Len(FilePath), FilePath, "\") > 0 Then
-        FilePath = Left(FilePath, Len(FilePath) - 1)
-    End If
-
-    'Check to see if the file exists and has read access
-    On Error GoTo File_Error
-    If fso.FileExists(FilePath) Then
-        fso.OpenTextFile(FilePath, 1).Read 0
-        Exists = True
-    Else
-        Exists = False
-    End If
-    On Error GoTo 0
-
-    Exit Function
-
-File_Error:
-    Exists = False
-End Function
