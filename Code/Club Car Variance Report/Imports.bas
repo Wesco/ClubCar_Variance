@@ -41,6 +41,7 @@ Sub UserImportFile(DestRange As Range, Optional SourceSheet As String = "", Opti
             End If
         End If
 
+        VerifyCols
         Sheets(SourceSheet).UsedRange.Copy Destination:=DestRange
 
         ActiveWorkbook.Saved = True
@@ -49,4 +50,20 @@ Sub UserImportFile(DestRange As Range, Optional SourceSheet As String = "", Opti
         Err.Raise 18, "UserImportFile", "User canceled import"
     End If
     Application.DisplayAlerts = PrevDispAlerts
+End Sub
+
+Private Sub VerifyCols()
+    Dim ColHeaders As Variant
+    Dim i As Integer
+
+    ColHeaders = Array("Sims", "Items", "Description", _
+                       "On Hand", "Reserve", "OO", "BO", _
+                       "WDC", "Last Cost", "UOM", "Supplier", _
+                       "A/P", "Vis")
+
+    For i = 0 To UBound(ColHeaders)
+        If Cells(1, i + 1).Value <> ColHeaders(i) Then
+            Err.Raise CustErr.COLNOTFOUND, "VerifyCols", "Column " & ColHeaders(i) & " not found"
+        End If
+    Next
 End Sub
