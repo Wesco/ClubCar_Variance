@@ -9,6 +9,7 @@ Option Explicit
 Sub UserImportFile(DestRange As Range, Optional SourceSheet As String = "", Optional ShowAllData = False, Optional FileFilter = "", Optional InitialFileName As String = "")
     Dim File As Variant             'Full path to user selected file
     Dim PrevDispAlerts As Boolean   'Original state of Application.DisplayAlerts
+    Dim i As Integer
 
     With Application.FileDialog(msoFileDialogFilePicker)
         .AllowMultiSelect = False
@@ -33,6 +34,11 @@ Sub UserImportFile(DestRange As Range, Optional SourceSheet As String = "", Opti
             ActiveSheet.AutoFilterMode = False
             ActiveSheet.Rows.Hidden = False
             ActiveSheet.Columns.Hidden = False
+            If ActiveSheet.ListObjects.Count > 0 Then
+                For i = 1 To ActiveSheet.ListObjects.Count
+                    ActiveSheet.ListObjects(i).Unlist
+                Next
+            End If
         End If
 
         Sheets(SourceSheet).UsedRange.Copy Destination:=DestRange
