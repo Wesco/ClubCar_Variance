@@ -4,31 +4,32 @@ Option Explicit
 Sub Main()
     On Error GoTo Import_Err
     MsgBox "Select Forecast P (1)"
-    UserImportFile DestRange:=Sheets("Report1").Range("A1"), _
+    ImportFile DestRange:=Sheets("Report1").Range("A1"), _
                    ShowAllData:=True, _
                    SourceSheet:="PivotTableP", _
                    InitialFileName:="\\br3615gaps\gaps\Club Car\Forecast\" & Format(Date, "yyyy") & "\"
 
     MsgBox "Select Forecast A (1)"
-    UserImportFile DestRange:=Sheets("Report1").Range("A" & Sheets("Report1").UsedRange.Rows.Count + 1), _
+    ImportFile DestRange:=Sheets("Report1").Range("A" & Sheets("Report1").UsedRange.Rows.Count + 1), _
                    ShowAllData:=True, _
                    SourceSheet:="PivotTableA", _
                    Title:="Open Forecast A", _
                    InitialFileName:="\\br3615gaps\gaps\Club Car\Forecast\" & Format(Date, "yyyy") & "\"
 
     MsgBox "Select Forecast P (2)"
-    UserImportFile DestRange:=Sheets("Report2").Range("A1"), _
+    ImportFile DestRange:=Sheets("Report2").Range("A1"), _
                    ShowAllData:=True, _
                    SourceSheet:="PivotTableP", _
                    Title:="Open Forecast P", _
                    InitialFileName:="\\br3615gaps\gaps\Club Car\Forecast\" & Format(Date, "yyyy") & "\"
 
     MsgBox "Select Forecast A (2)"
-    UserImportFile DestRange:=Sheets("Report2").Range("A" & Sheets("Report2").UsedRange.Rows.Count + 1), _
+    ImportFile DestRange:=Sheets("Report2").Range("A" & Sheets("Report2").UsedRange.Rows.Count + 1), _
                    ShowAllData:=True, _
                    SourceSheet:="PivotTableA", _
                    Title:="Open Forecast A", _
                    InitialFileName:="\\br3615gaps\gaps\Club Car\Forecast\" & Format(Date, "yyyy") & "\"
+                   
     On Error GoTo 0
 
     Exit Sub

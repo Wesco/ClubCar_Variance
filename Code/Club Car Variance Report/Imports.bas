@@ -2,11 +2,11 @@ Attribute VB_Name = "Imports"
 Option Explicit
 
 '---------------------------------------------------------------------------------------
-' Proc : UserImportFile
+' Proc : ImportFile
 ' Date : 7/31/2014
 ' Desc : Prompts the user to select a file for import
 '---------------------------------------------------------------------------------------
-Sub UserImportFile(DestRange As Range, Optional Title As String = "Open", Optional SourceSheet As String = "", _
+Sub ImportFile(DestRange As Range, Optional Title As String = "Open", Optional SourceSheet As String = "", _
                    Optional ShowAllData = False, Optional InitialFileName As String = "")
     Dim File As Variant             'Full path to user selected file
     Dim PrevDispAlerts As Boolean   'Original state of Application.DisplayAlerts
