@@ -9,6 +9,11 @@ Sub Main()
                    FileFilter:="Excel Files (*.xlsx; *.xls), *.xlsx; *.xls", _
                    InitialFileName:="\\br3615gaps\gaps\Club Car\Order Report\"
 
+    UserImportFile DestRange:=Sheets("Report2").Range("A1"), _
+                   ShowAllData:=True, _
+                   SourceSheet:="Forecast", _
+                   FileFilter:="Excel Files (*.xlsx; *.xls), *.xlsx; *.xls", _
+                   InitialFileName:="\\br3615gaps\gaps\Club Car\Order Report\"
     On Error GoTo 0
     Exit Sub
 
@@ -37,7 +42,7 @@ Sub Clean()
     Next
 
     PrevActiveBook.Activate
-    Application.Dialogs = PrevDispAlerts
+    Application.DisplayAlerts = PrevDispAlerts
 
     Sheets("Macro").Select
     Range("C7").Select
