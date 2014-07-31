@@ -6,9 +6,11 @@ Sub Main()
 End Sub
 
 Sub Clean()
-    Dim s As Worksheet
+    Dim PrevActiveBook As Workbook
     Dim PrevDispAlerts As Boolean
+    Dim s As Worksheet
 
+    Set PrevActiveBook = ActiveWorkbook
     Application.DisplayAlerts = False
     ThisWorkbook.Activate
 
@@ -21,4 +23,10 @@ Sub Clean()
             s.Cells.Delete
         End If
     Next
+    
+    PrevActiveBook.Activate
+    Application.Dialogs = PrevDispAlerts
+    
+    Sheets("Macro").Select
+    Range("C7").Select
 End Sub
