@@ -18,3 +18,10 @@ Private Sub Workbook_BeforeSave(ByVal SaveAsUI As Boolean, Cancel As Boolean)
         Cancel = True
     End If
 End Sub
+
+Private Sub Workbook_AfterSave(ByVal Success As Boolean)
+    If Environ("username") = "TReische" Then
+        ExportCode
+    End If
+End Sub
+
