@@ -3,38 +3,44 @@ Option Explicit
 
 '---------------------------------------------------------------------------------------
 ' Proc : UserImportFile
-' Date : 1/29/2013
+' Date : 7/31/2014
 ' Desc : Prompts the user to select a file for import
 '---------------------------------------------------------------------------------------
-Sub UserImportFile(DestRange As Range, Optional DelFile As Boolean = False, Optional ShowAllData As Boolean = False, Optional SourceSheet As String = "", Optional FileFilter = "")
-    Dim File As String              'Full path to user selected file
-    Dim FileDate As String          'Date the file was last modified
-    Dim OldDispAlert As Boolean     'Original state of Application.DisplayAlerts
+Sub UserImportFile(DestRange As Range, Optional SourceSheet As String = "", Optional ShowAllData = False, Optional FileFilter = "", Optional InitialFileName As String = "")
+    Dim File As Variant             'Full path to user selected file
+    Dim PrevDispAlerts As Boolean   'Original state of Application.DisplayAlerts
 
-    OldDispAlert = Application.DisplayAlerts
-    File = Application.GetOpenFilename(FileFilter)
+    With Application.FileDialog(msoFileDialogFilePicker)
+        .AllowMultiSelect = False
+        .InitialFileName = InitialFileName
+        .Show
 
+        If .SelectedItems.Count = 1 Then
+            File = .SelectedItems(1)
+        End If
+    End With
+
+    PrevDispAlerts = Application.DisplayAlerts
     Application.DisplayAlerts = False
-    If File <> "False" Then
-        FileDate = Format(FileDateTime(File), "mm/dd/yy")
-        Workbooks.Open File
-        If SourceSheet = "" Then SourceSheet = ActiveSheet.Name
-        If ShowAllData = True Then
-            On Error Resume Next
-            ActiveSheet.AutoFilter.ShowAllData
-            ActiveSheet.UsedRange.Columns.Hidden = False
-            ActiveSheet.UsedRange.Rows.Hidden = False
-            On Error GoTo 0
-        End If
-        Sheets(SourceSheet).UsedRange.Copy Destination:=DestRange
-        ActiveWorkbook.Close
-        ThisWorkbook.Activate
 
-        If DelFile = True Then
-            DeleteFile File
+    If File <> "" Then
+        Workbooks.Open File
+
+        If SourceSheet = "" Then SourceSheet = ActiveSheet.Name
+        Sheets(SourceSheet).Select
+
+        If ShowAllData = True Then
+            ActiveSheet.AutoFilterMode = False
+            ActiveSheet.Rows.Hidden = False
+            ActiveSheet.Columns.Hidden = False
         End If
+
+        Sheets(SourceSheet).UsedRange.Copy Destination:=DestRange
+
+        ActiveWorkbook.Saved = True
+        ActiveWorkbook.Close
     Else
-        Err.Raise 18
+        Err.Raise 18, "UserImportFile", "User canceled import"
     End If
-    Application.DisplayAlerts = OldDispAlert
+    Application.DisplayAlerts = PrevDispAlerts
 End Sub

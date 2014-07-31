@@ -110,7 +110,7 @@ Sub CheckForUpdates(RepoName As String, LocalVer As String)
     'Expression to verify the data retrieved is a version number
     RegEx.Pattern = "^[0-9]+\.[0-9]+\.[0-9]+$"
 
-    If RegEx.Test(RemoteVer) Then
+    If RegEx.test(RemoteVer) Then
         If Not RemoteVer = LocalVer Then
             Result = MsgBox("An update is available. Would you like to download the latest version now?", vbYesNo, "Update Available")
             If Result = vbYes Then
